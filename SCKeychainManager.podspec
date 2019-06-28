@@ -10,15 +10,15 @@ Pod::Spec.new do |s|
   s.name             = 'SCKeychainManager'
   s.version          = '0.1.0'
   s.summary          = 'A wrapper for storing, removing and retrieving items from the Keychain.'
-
+  s.swift_versions   = '5.0'
   s.description      = <<-DESC
                         A wrapper for storing, removing and retrieving passwords, certificates, keys, JSON Web Tokens, or any other type of data in a secure way.
                        DESC
 
-  s.homepage         = 'https://github.com/eaceto/SCKeychainManager'
+  s.homepage         = 'https://github.com/libscudo/SCKeychainManager-iOS'
   s.license          = { :type => 'MIT', :file => 'LICENSE' }
   s.author           = { 'eaceto' => 'ezequiel.aceto@gmail.com' }
-  s.source           = { :git => 'https://github.com/eaceto/SCKeychainManager.git', :tag => s.version.to_s }
+  s.source           = { :git => 'https://github.com/libscudo/SCKeychainManager-iOS.git', :tag => s.version.to_s }
   s.social_media_url = 'https://twitter.com/eaceto_public'
 
   s.ios.deployment_target = '10.0'

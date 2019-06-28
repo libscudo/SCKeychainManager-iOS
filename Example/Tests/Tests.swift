@@ -2,47 +2,29 @@
 
 import Quick
 import Nimble
-import SCKeychainManager
+@testable import SCKeychainManager
 
-class TableOfContentsSpec: QuickSpec {
+class SCKeychainManagerSpec: QuickSpec {
     override func spec() {
-        describe("these will fail") {
-
-            it("can do maths") {
-                expect(1) == 2
-            }
-
-            it("can read") {
-                expect("number") == "string"
-            }
-
-            it("will eventually fail") {
-                expect("time").toEventually( equal("done") )
-            }
-            
-            context("these will pass") {
-
-                it("can do maths") {
-                    expect(23) == 23
+        describe("SCKeychainManager") {
+            context("can be used with default parameters") {
+                let manager = SCKeychainManager.standard
+                it("must be non-nil") {
+                    expect(manager).notTo(beNil())
                 }
-
-                it("can read") {
-                    expect("🐮") == "🐮"
+                
+                it("must have the main bundle identifier as serviceName") {
+                    expect(manager.serviceName).to(be(Bundle.main.bundleIdentifier))
                 }
-
-                it("will eventually pass") {
-                    var time = "passing"
-
-                    DispatchQueue.main.async {
-                        time = "done"
-                    }
-
-                    waitUntil { done in
-                        Thread.sleep(forTimeInterval: 0.5)
-                        expect(time) == "done"
-
-                        done()
-                    }
+                
+                it("can save multiple items securely") {
+                    manager.securely() //unlock is required and no iCloud sync
+                        //or .insecurely()
+                        .set("a string", forKey: "key1")
+                        .set("another string", forKey: "Key2")
+                        .set(true, forKey: "boolKey")
+                        .allowSinchronization() // override iCloud sync
+                        .apply()
                 }
             }
         }

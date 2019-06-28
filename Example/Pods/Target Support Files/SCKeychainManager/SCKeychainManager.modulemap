@@ -1,0 +1,6 @@
+framework module SCKeychainManager {
+  umbrella header "SCKeychainManager-umbrella.h"
+
+  export *
+  module * { export * }
+}

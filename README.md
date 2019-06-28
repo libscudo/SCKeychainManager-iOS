@@ -7,6 +7,8 @@
 
 A wrapper for storing, removing and retrieving items from the Keychain.
 
+This is a BIG Work In Progress, for a much bigger project [libScudo](https://github.com/libscudo/Scudo-iOS)
+
 - [Requirements](#requirements)
 - [Installation](#installation)
 - [Example project and test](#example-project-and-test)

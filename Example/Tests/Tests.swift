@@ -17,14 +17,50 @@ class SCKeychainManagerSpec: QuickSpec {
                     expect(manager.serviceName).to(be(Bundle.main.bundleIdentifier))
                 }
                 
-                it("can save multiple items securely") {
-                    manager.securely() //unlock is required and no iCloud sync
-                        //or .insecurely()
-                        .set("a string", forKey: "key1")
-                        .set("another string", forKey: "Key2")
-                        .set(true, forKey: "boolKey")
-                        .allowSinchronization() // override iCloud sync
+                it("can set multiple items at once") {
+                    try! manager.securely() //unlock is required and no iCloud sync
+                        .set("eaceto", forKey: "username")
+                        .set("my-secret-password", forKey: "password")
+                        .set(true, forKey: "validated")
                         .apply()
+                }
+                
+                it ("can get items") {
+                    try! manager.securely().set("eaceto", forKey: "username").apply()
+                    
+                    let username = manager.string(forKey: "username")
+                    expect("eaceto").to(be(username))
+                }
+                
+                it("can remove them") {
+                    try! manager.securely()
+                        .set("my-secret-password", forKey: "password")
+                        .set(true, forKey: "validated")
+                        .set(0, forKey: "userId")
+                        .apply()
+                    
+                    var password = manager.string(forKey: "password")
+                    var validated = manager.bool(forKey: "validated")
+                    var userId = manager.integer(forKey: "userId")
+                    
+                    expect(password).to(equal("my-secret-password"))
+                    expect(validated).to(equal(true))
+                    expect(userId).to(equal(0))
+                    
+                    try! manager.securely()
+                        .removeObject(forKey: "password")
+                        .removeObject(forKey: "validated")
+                        .removeObject(forKey: "userId")
+                        .apply()
+                    
+                    
+                    password = manager.string(forKey: "password")
+                    validated = manager.bool(forKey: "validated")
+                    userId = manager.integer(forKey: "userId")
+                    
+                    expect(password).to(beNil())
+                    expect(validated).to(beNil())
+                    expect(userId).to(beNil())
                 }
             }
         }

@@ -5,6 +5,46 @@ import Nimble
 @testable import SCKeychainManager
 
 class SCKeychainManagerSpec: QuickSpec {
+    
+    func generateRSAKeyPair(with identifier : String, _ completion : @escaping (_ created : Bool) -> Void) {
+        let tag = "\(Bundle.main.bundleIdentifier ?? "").\(identifier)"
+        let privateKeySpec: [CFString : Any] = [
+            kSecAttrIsPermanent: true,
+            kSecAttrApplicationTag: tag
+        ]
+        
+        let publicKeyParams: [CFString : Any] = [
+            kSecAttrIsPermanent: true,
+            kSecAttrApplicationTag: tag
+        ]
+        
+        let keyPairParams: [CFString: Any] = [
+            kSecPublicKeyAttrs: publicKeyParams,
+            kSecPrivateKeyAttrs: privateKeySpec,
+            kSecAttrKeyType: kSecAttrKeyTypeRSA,
+            kSecAttrKeySizeInBits: 4096,
+        ]
+        
+        // private / public key generation takes a lot of time, so this operation must be perform in another thread.
+        DispatchQueue.global().async {
+            var publicKey : SecKey?
+            var privateKey : SecKey?
+            
+            let status = SecKeyGeneratePair(keyPairParams as CFDictionary, &publicKey, &privateKey)
+            
+            if status != errSecSuccess {
+                DispatchQueue.main.async {
+                    completion(false)
+                }
+                return
+            }
+            
+            DispatchQueue.main.async {
+                completion(true)
+            }
+        }
+    }
+    
     override func spec() {
         describe("SCKeychainManager") {
             context("can be used with default parameters") {
@@ -61,6 +101,19 @@ class SCKeychainManagerSpec: QuickSpec {
                     expect(password).to(beNil())
                     expect(validated).to(beNil())
                     expect(userId).to(beNil())
+                }
+                
+                it("can get a RSA Public Key") {
+                    waitUntil(timeout: 30) { done in
+                        let identifier = "test_public_key_1"
+                        self.generateRSAKeyPair(with: identifier) { created in
+                            expect(created).to(equal(true))
+                            
+                            let publicKey = manager.rsaPublicKey(identifiedBy: identifier)
+                            expect(publicKey).notTo(beNil())
+                            done()
+                        }
+                    }
                 }
             }
         }

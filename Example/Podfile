@@ -8,5 +8,6 @@ target 'SCKeychainManager_Example' do
  
     pod 'Quick'
     pod 'Nimble'
+    pod 'SCPKIHelper'
   end
 end

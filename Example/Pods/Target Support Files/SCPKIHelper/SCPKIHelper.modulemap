@@ -1,0 +1,6 @@
+framework module SCPKIHelper {
+  umbrella header "SCPKIHelper-umbrella.h"
+
+  export *
+  module * { export * }
+}

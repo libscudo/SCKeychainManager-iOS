@@ -131,12 +131,11 @@ public extension SCKeychainManager {
     func rsaPublicKey(identifiedBy indentifier : String) -> SecKey? {
         let query = createRSAPublicKeyTypedQuery(indentifier)
         
-        var dataRef: AnyObject?
-        let status = SecItemCopyMatching(query as CFDictionary, &dataRef)
+        var data: AnyObject?
+        let status = SecItemCopyMatching(query as CFDictionary, &data)
         
-        if status == errSecSuccess, let ref = dataRef {
-            return (ref as! SecKey)
-            
+        if status == errSecSuccess {
+            return data as! SecKey?
         }
         
         return nil
@@ -185,17 +184,17 @@ public extension SCKeychainManager {
 // Keychain query dictionary builder
 extension SCKeychainManager {
     
-    func createRSAPublicKeyTypedQuery(_ identifier : String) -> [CFString : Any] {
+    func createRSAPublicKeyTypedQuery(_ identifier : String) -> CFDictionary {
         let keyIdentifier = "\(self.serviceName).\(identifier)"
         let query = [
             kSecClass: kSecClassKey,
             kSecAttrKeyType: kSecAttrKeyTypeRSA,
             kSecAttrApplicationTag: keyIdentifier,
             kSecAttrKeyClass: kSecAttrKeyClassPublic,
-            kSecReturnData: true
+            kSecReturnRef: true
         ] as [CFString : Any]
         
-        return query
+        return query as CFDictionary
     }
     
     func createTypedQuery(type : CFString, with options : SCKeychainOperationBuilderOptions?) -> [CFString : Any] {

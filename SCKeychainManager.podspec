@@ -8,7 +8,7 @@
 
 Pod::Spec.new do |s|
   s.name             = 'SCKeychainManager'
-  s.version          = '0.1.3'
+  s.version          = '0.1.4'
   s.summary          = 'A wrapper for storing, removing and retrieving items from the Keychain.'
   s.swift_versions   = '5.0'
   s.description      = <<-DESC

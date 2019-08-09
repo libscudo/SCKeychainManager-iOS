@@ -84,7 +84,7 @@ public extension SCKeychainOperationBuilder {
 }
 
 // Apply
-extension SCKeychainOperationBuilder {
+public extension SCKeychainOperationBuilder {
     func apply() throws {
         if hasInconsistentOperations() {
             throw SCKeychainOperationBuilderError.inconsistentOperations
